@@ -1,99 +1,60 @@
-╔═══════════════════════════════════════════════════════════════════╗
-║                                                                   ║
-║           DISTRIBUTED ALARM & TELEMETRY SYSTEM (DATS)             ║
-║              MQTT · Go API · Redis · Cassandra · React            ║
-║                                                                   ║
-╚═══════════════════════════════════════════════════════════════════╝
+# DISTRIBUTED ALARM & TELEMETRY SYSTEM (DATS)
+**MQTT · Go API · Redis · Cassandra · React**
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                              DOCKER HOST                                        │
-│                                                                                  │
-│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐     │
-│  │   Node-RED  │    │  Mosquitto  │    │   React     │    │   NGINX     │     │
-│  │  (HTTP:1880)│    │ (MQTT:1883) │    │ (HTTP:3000) │    │ (HTTP:80)   │     │
-│  │  (WS:9001)  │    │             │    │             │    │ (HTTPS:443) │     │
-│  └──────┬──────┘    └──────┬──────┘    └──────┬──────┘    └──────┬──────┘     │
-│         │                  │                  │                  │             │
-│         └──────────────────┼──────────────────┼──────────────────┘             │
-│                            │                  │                                │
-│                     ┌──────┴──────┐    ┌──────┴──────┐                         │
-│                     │   Network   │    │   Volumes   │                         │
-│                     │(alarms-net) │    │ (persistent)│                         │
-│                     └──────┬──────┘    └──────┬──────┘                         │
-│                            │                  │                                │
-│         ┌──────────────────┼──────────────────┼──────────────────┐             │
-│         │                  │                  │                  │             │
-│  ┌──────┴──────┐    ┌──────┴──────┐    ┌──────┴──────┐    ┌──────┴──────┐     │
-│  │   Redis     │    │  Cassandra  │    │  Go API     │    │   SQLite    │     │
-│  │  (Cache)    │    │   (Main DB) │    │ (HTTP:8083) │    │  (Local DB) │     │
-│  │  Port:6379  │    │  Port:9042  │    │             │    │  (mini mode)│     │
-│  └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘     │
-│                                                                                  │
-│  ┌─────────────────────────────────────────────────────────────────────────┐   │
-│  │                           DATA FLOW                                      │   │
-│  │                                                                          │   │
-│  │   React ──► Go API ──► Redis (Cache) ──► Cassandra (Main DB)          │   │
-│  │     │           │                                                       │   │
-│  │     │           └──► SQLite (Mini mode backup)                         │   │
-│  │     │                                                                    │   │
-│  │     └───► Mosquitto (MQTT) ◄──► Node-RED (Alarms Manager)             │   │
-│  │                                                                          │   │
-│  └─────────────────────────────────────────────────────────────────────────┘   │
-│                                                                                  │
-│  ┌─────────────────────────────────────────────────────────────────────────┐   │
-│  │                        STORAGE VOLUMES                                  │   │
-│  │                                                                          │   │
-│  │  ├── cassandra-data   (Cassandra database files)                       │   │
-│  │  ├── redis-data       (Redis cache persistence)                        │   │
-│  │  ├── sqllite-data     (SQLite database files)                          │   │
-│  │  ├── nodered-data     (Node-RED flows and config)                      │   │
-│  │  ├── mosquitto-data   (MQTT persistence)                               │   │
-│  │  └── mosquitto-config (MQTT configuration)                             │   │
-│  │                                                                          │   │
-│  └─────────────────────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────────────────┘─────┘
+---
 
+## 🧠 DOCKER HOST ARCHITECTURE
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                           1. RECORD DATA FLOW                                    │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│   Transmitter ──► Go API ──► Redis (check cache)                               │
-│                              │                                                   │
-│                              ├── Cache Hit ──► Return (fast)                   │
-│                              │                                                   │
-│                              └── Cache Miss ──► Cassandra (store)              │
-│                                                   │                             │
-│                                                   └──► SQLite (backup)         │
-│                                                                                  │
-└─────────────────────────────────────────────────────────────────────────────────┘
+### Core Services
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                           2. ALARM DATA FLOW                                     │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│   Sensor ──► Mosquitto (MQTT) ──► Node-RED (process)                          │
-│                                       │                                          │
-│                                       ├──► Go API (store alarm)                │
-│                                       │         │                               │
-│                                       │         └──► Cassandra + Redis         │
-│                                       │                                          │
-│                                       └──► React Dashboard (real-time)         │
-│                                                                                  │
-└─────────────────────────────────────────────────────────────────────────────────┘
+- **Node-RED**
+  - HTTP: `1880`
+  - WebSocket: `9001`
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                           3. WEB CACHE FLOW                                      │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│   React Request ──► Go API ──► Redis (Check)                                   │
-│                              │                                                   │
-│                              ├── Cache Hit ──► JSON Response (1-2ms)           │
-│                              │                                                   │
-│                              └── Cache Miss ──► Cassandra Query (50ms)         │
-│                                                   │                             │
-│                                                   └──► Store in Redis          │
-│                                                        │                        │
-│                                                        └──► Return JSON        │
-│                                                                                  │
-└─────────────────────────────────────────────────────────────────────────────────┘****
+- **Mosquitto (MQTT Broker)**
+  - MQTT: `1883`
+
+- **React Frontend**
+  - HTTP: `3000`
+
+- **NGINX Gateway**
+  - HTTP: `80`
+  - HTTPS: `443`
+
+---
+
+### Data Layer
+
+- **Redis**
+  - Cache layer
+  - Port: `6379`
+
+- **Cassandra**
+  - Main distributed database
+  - Port: `9042`
+
+- **Go API**
+  - Core backend service
+  - HTTP: `8083`
+
+- **SQLite**
+  - Local fallback / mini-mode storage
+
+---
+
+### Network & Storage
+
+- Network: `alarms-net`
+- Persistent Volumes:
+  - `cassandra-data`
+  - `redis-data`
+  - `sqlite-data`
+  - `nodered-data`
+  - `mosquitto-data`
+  - `mosquitto-config`
+
+---
+
+## 🔄 DATA FLOW
+
+### 1. Record Data Flow
