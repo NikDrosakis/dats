@@ -1,0 +1,449 @@
+.
+├── docs
+│   ├── docs.go
+│   ├── swagger.json
+│   └── swagger.yaml
+├── go.mod
+├── go.sum
+├── main.go
+├── maria
+│   ├── schema_mini_extras.sql
+│   └── schema.sql
+├── sqlite
+│   ├── init
+│   │   └── schema.sql
+│   └── schema.sql
+├── sqlite_mini_extras
+│   └── init
+│       └── schema.sql
+├── src
+│   ├── controllers
+│   │   ├── assets
+│   │   │   ├── set.go
+│   │   │   ├── trigger.go
+│   │   │   └── utils.go
+│   │   ├── controllers.go
+│   │   ├── db
+│   │   │   ├── cassandra
+│   │   │   │   ├── alarms
+│   │   │   │   │   ├── get.go
+│   │   │   │   │   ├── set.go
+│   │   │   │   │   └── trigger.go
+│   │   │   │   ├── alarms_events_history
+│   │   │   │   │   ├── get.go
+│   │   │   │   │   ├── model.go
+│   │   │   │   │   ├── set.go
+│   │   │   │   │   └── trigger.go
+│   │   │   │   ├── cassandra.go
+│   │   │   │   ├── devices
+│   │   │   │   │   ├── get.go
+│   │   │   │   │   ├── set.go
+│   │   │   │   │   └── trigger.go
+│   │   │   │   ├── devices_alarm_groups
+│   │   │   │   │   ├── get.go
+│   │   │   │   │   ├── set.go
+│   │   │   │   │   └── trigger.go
+│   │   │   │   ├── records_batches
+│   │   │   │   │   ├── graph
+│   │   │   │   │   │   └── get
+│   │   │   │   │   │       └── get.go
+│   │   │   │   │   ├── set
+│   │   │   │   │   │   └── set.go
+│   │   │   │   │   ├── simulation
+│   │   │   │   │   │   └── get
+│   │   │   │   │   │       └── get.go
+│   │   │   │   │   └── trigger.go
+│   │   │   │   ├── records_batches_no_repeat
+│   │   │   │   │   ├── graph
+│   │   │   │   │   │   └── get
+│   │   │   │   │   │       └── get.go
+│   │   │   │   │   ├── set
+│   │   │   │   │   │   └── set.go
+│   │   │   │   │   ├── simulation
+│   │   │   │   │   │   └── get
+│   │   │   │   │   │       └── get.go
+│   │   │   │   │   └── trigger.go
+│   │   │   │   ├── tags
+│   │   │   │   │   ├── get.go
+│   │   │   │   │   ├── set.go
+│   │   │   │   │   └── trigger.go
+│   │   │   │   ├── timestamps
+│   │   │   │   │   └── timestamps.go
+│   │   │   │   └── transmitter_serials
+│   │   │   │       ├── get.go
+│   │   │   │       ├── set.go
+│   │   │   │       └── trigger.go
+│   │   │   ├── db.go
+│   │   │   ├── redis
+│   │   │   │   ├── keys
+│   │   │   │   │   ├── commands
+│   │   │   │   │   │   ├── functions.go
+│   │   │   │   │   │   ├── model.go
+│   │   │   │   │   │   └── trigger.go
+│   │   │   │   │   ├── keys.go
+│   │   │   │   │   ├── latest_records
+│   │   │   │   │   │   ├── exports.go
+│   │   │   │   │   │   ├── records_latest.go
+│   │   │   │   │   │   └── trigger.go
+│   │   │   │   │   ├── records
+│   │   │   │   │   │   ├── exports.go
+│   │   │   │   │   │   ├── graph
+│   │   │   │   │   │   │   └── get
+│   │   │   │   │   │   │       └── get.go
+│   │   │   │   │   │   ├── model.go
+│   │   │   │   │   │   ├── records_batches
+│   │   │   │   │   │   │   └── abstract
+│   │   │   │   │   │   │       └── latest
+│   │   │   │   │   │   │           ├── get
+│   │   │   │   │   │   │           │   ├── get.go
+│   │   │   │   │   │   │           │   ├── model.go
+│   │   │   │   │   │   │           │   └── utils.go
+│   │   │   │   │   │   │           └── save
+│   │   │   │   │   │   │               ├── save.go
+│   │   │   │   │   │   │               └── utils.go
+│   │   │   │   │   │   ├── set.go
+│   │   │   │   │   │   ├── times_record
+│   │   │   │   │   │   │   └── get
+│   │   │   │   │   │   │       └── get.go
+│   │   │   │   │   │   ├── trigger.go
+│   │   │   │   │   │   └── utils
+│   │   │   │   │   │       └── utils.go
+│   │   │   │   │   ├── records_incomplete_hours
+│   │   │   │   │   │   ├── exports.go
+│   │   │   │   │   │   ├── records_incomplete_hours.go
+│   │   │   │   │   │   └── trigger.go
+│   │   │   │   │   ├── sessions
+│   │   │   │   │   │   ├── exports.go
+│   │   │   │   │   │   ├── generate.go
+│   │   │   │   │   │   ├── parts.go
+│   │   │   │   │   │   ├── sessions.go
+│   │   │   │   │   │   └── trigger.go
+│   │   │   │   │   └── utils
+│   │   │   │   │       └── utils.go
+│   │   │   │   ├── README.md
+│   │   │   │   └── redis.go
+│   │   │   ├── sqlite
+│   │   │   │   ├── assets
+│   │   │   │   │   ├── model.go
+│   │   │   │   │   └── set.go
+│   │   │   │   ├── live
+│   │   │   │   │   ├── delete
+│   │   │   │   │   │   └── delete.go
+│   │   │   │   │   ├── get
+│   │   │   │   │   │   ├── devices
+│   │   │   │   │   │   │   └── get.go
+│   │   │   │   │   │   ├── get.go
+│   │   │   │   │   │   └── model.go
+│   │   │   │   │   ├── last_modified
+│   │   │   │   │   │   ├── get.go
+│   │   │   │   │   │   ├── model.go
+│   │   │   │   │   │   └── set.go
+│   │   │   │   │   ├── live.go
+│   │   │   │   │   ├── set
+│   │   │   │   │   │   └── set.go
+│   │   │   │   │   └── update
+│   │   │   │   │       └── update.go
+│   │   │   │   ├── meta
+│   │   │   │   │   └── meta.go
+│   │   │   │   ├── nicenames
+│   │   │   │   │   ├── model.go
+│   │   │   │   │   └── nicenames.go
+│   │   │   │   ├── sources
+│   │   │   │   │   ├── exists.go
+│   │   │   │   │   ├── get.go
+│   │   │   │   │   └── set.go
+│   │   │   │   ├── sqlite.go
+│   │   │   │   ├── users
+│   │   │   │   │   ├── assets
+│   │   │   │   │   │   ├── get.go
+│   │   │   │   │   │   └── set.go
+│   │   │   │   │   ├── auth.go
+│   │   │   │   │   ├── exists.go
+│   │   │   │   │   ├── exports.go
+│   │   │   │   │   ├── get.go
+│   │   │   │   │   ├── get_userIdByUsername.go
+│   │   │   │   │   ├── get_usernameByUserId.go
+│   │   │   │   │   ├── isCorrupted.go
+│   │   │   │   │   ├── isEnabled.go
+│   │   │   │   │   ├── root
+│   │   │   │   │   │   ├── authRoot.go
+│   │   │   │   │   │   ├── existsRoot.go
+│   │   │   │   │   │   ├── getIdRoot.go
+│   │   │   │   │   │   ├── getUsernameRoot.go
+│   │   │   │   │   │   ├── isCorruptedRoot.go
+│   │   │   │   │   │   ├── isRoot.go
+│   │   │   │   │   │   ├── setRoot.go
+│   │   │   │   │   │   └── trigger.go
+│   │   │   │   │   ├── set.go
+│   │   │   │   │   ├── sources
+│   │   │   │   │   │   ├── delete_source.go
+│   │   │   │   │   │   ├── get_by_sources.go
+│   │   │   │   │   │   ├── get_by_user_ids.go
+│   │   │   │   │   │   └── set.go
+│   │   │   │   │   ├── trigger.go
+│   │   │   │   │   ├── utils_name.go
+│   │   │   │   │   └── utils_pass.go
+│   │   │   │   └── users_pin
+│   │   │   │       ├── auth.go
+│   │   │   │       ├── authRoot.go
+│   │   │   │       ├── disable.go
+│   │   │   │       ├── enable.go
+│   │   │   │       ├── isEnabled.go
+│   │   │   │       ├── isEnabledRoot.go
+│   │   │   │       ├── isSet.go
+│   │   │   │       ├── isSetRoot.go
+│   │   │   │       ├── reset.go
+│   │   │   │       └── set.go
+│   │   │   └── sqlite_mini_extras
+│   │   │       ├── alarms
+│   │   │       │   ├── get.go
+│   │   │       │   ├── set.go
+│   │   │       │   └── trigger.go
+│   │   │       ├── alarms_events_history
+│   │   │       │   ├── get.go
+│   │   │       │   ├── model.go
+│   │   │       │   ├── set.go
+│   │   │       │   ├── trigger.go
+│   │   │       │   └── ttl.go
+│   │   │       ├── devices
+│   │   │       │   ├── get.go
+│   │   │       │   ├── set.go
+│   │   │       │   └── trigger.go
+│   │   │       ├── devices_alarm_groups
+│   │   │       │   ├── get.go
+│   │   │       │   ├── set.go
+│   │   │       │   └── trigger.go
+│   │   │       ├── records_batches
+│   │   │       │   ├── graph
+│   │   │       │   │   └── get
+│   │   │       │   │       └── get.go
+│   │   │       │   ├── set
+│   │   │       │   │   └── set.go
+│   │   │       │   ├── simulation
+│   │   │       │   │   └── get
+│   │   │       │   │       └── get.go
+│   │   │       │   ├── trigger.go
+│   │   │       │   └── ttl
+│   │   │       │       └── ttl.go
+│   │   │       ├── records_batches_no_repeat
+│   │   │       │   ├── abstract
+│   │   │       │   │   ├── graph
+│   │   │       │   │   │   └── get
+│   │   │       │   │   │       └── get.go
+│   │   │       │   │   └── simulation
+│   │   │       │   │       └── get
+│   │   │       │   │           └── get.go
+│   │   │       │   ├── set
+│   │   │       │   │   └── set.go
+│   │   │       │   ├── trigger.go
+│   │   │       │   └── ttl
+│   │   │       │       └── ttl.go
+│   │   │       ├── sqlite_mini_extras.go
+│   │   │       ├── tags
+│   │   │       │   ├── get.go
+│   │   │       │   ├── set.go
+│   │   │       │   └── trigger.go
+│   │   │       ├── timestamps
+│   │   │       │   └── timestamps.go
+│   │   │       └── transmitter_serials
+│   │   │           ├── get.go
+│   │   │           ├── set.go
+│   │   │           └── trigger.go
+│   │   ├── license_key
+│   │   │   ├── request
+│   │   │   │   ├── encrypted
+│   │   │   │   │   └── public
+│   │   │   │   │       └── get.go
+│   │   │   │   ├── get.go
+│   │   │   │   └── utils
+│   │   │   │       ├── deobfuscate0x5aXor.go
+│   │   │   │       ├── encrypt.go
+│   │   │   │       └── obfuscate0x5aXor.go
+│   │   │   ├── set
+│   │   │   │   ├── set.go
+│   │   │   │   └── utils
+│   │   │   │       ├── isSet.go
+│   │   │   │       └── signatureVerifyRsaPKCS1v15.go
+│   │   │   ├── trigger.go
+│   │   │   ├── utils
+│   │   │   │   └── getPubKeyRsa.go
+│   │   │   └── verify
+│   │   │       └── verify.go
+│   │   ├── mode
+│   │   │   ├── mode.go
+│   │   │   └── trigger.go
+│   │   ├── records
+│   │   │   └── graph.go
+│   │   ├── records_batches
+│   │   │   ├── get.go
+│   │   │   ├── set.go
+│   │   │   ├── simulation.go
+│   │   │   └── utils.go
+│   │   ├── transmitter_fallocate
+│   │   │   ├── deprecate.go
+│   │   │   ├── fallocate.go
+│   │   │   ├── lock.go
+│   │   │   ├── trigger.go
+│   │   │   ├── unfallocate.go
+│   │   │   ├── unlock.go
+│   │   │   └── utils
+│   │   │       ├── getFreeSpace.go
+│   │   │       └── utils.go
+│   │   ├── ttls
+│   │   │   ├── trigger.go
+│   │   │   ├── ttls.go
+│   │   │   └── utils.go
+│   │   └── variant_license_key
+│   │       ├── request
+│   │       │   ├── encrypted
+│   │       │   │   └── public
+│   │       │   │       └── get.go
+│   │       │   ├── get.go
+│   │       │   ├── model.go
+│   │       │   └── utils
+│   │       │       ├── deobfuscate0x5aXor.go
+│   │       │       ├── encrypt.go
+│   │       │       └── obfuscate0x5aXor.go
+│   │       ├── set
+│   │       │   ├── set.go
+│   │       │   └── utils
+│   │       │       ├── isSet.go
+│   │       │       └── signatureVerifyRsaPKCS1v15.go
+│   │       ├── utils
+│   │       │   └── getPubKeyRsa.go
+│   │       ├── variant_license_key.go
+│   │       └── verify
+│   │           └── verify.go
+│   ├── models
+│   │   ├── alarms
+│   │   │   ├── get.go
+│   │   │   ├── set.go
+│   │   │   └── trigger.go
+│   │   ├── alarms_events_history
+│   │   │   ├── get.go
+│   │   │   ├── set.go
+│   │   │   └── trigger.go
+│   │   ├── devices
+│   │   │   ├── get.go
+│   │   │   ├── set.go
+│   │   │   └── trigger.go
+│   │   ├── devices_alarm_groups
+│   │   │   ├── get.go
+│   │   │   ├── set.go
+│   │   │   └── trigger.go
+│   │   ├── global_model
+│   │   │   ├── global_model_const.go
+│   │   │   ├── global_model_ctx.go
+│   │   │   └── global_model.go
+│   │   ├── license_key
+│   │   │   └── license_key.go
+│   │   ├── models.go
+│   │   ├── records_batches
+│   │   │   ├── graph
+│   │   │   │   ├── get.go
+│   │   │   │   └── set.go
+│   │   │   ├── simulation
+│   │   │   │   └── get.go
+│   │   │   └── trigger.go
+│   │   ├── records_batches_no_repeat
+│   │   │   ├── graph
+│   │   │   │   └── get.go
+│   │   │   ├── set.go
+│   │   │   ├── simulation
+│   │   │   │   └── get.go
+│   │   │   └── trigger.go
+│   │   ├── tags
+│   │   │   ├── get.go
+│   │   │   ├── set.go
+│   │   │   └── trigger.go
+│   │   └── transmitter_serials
+│   │       ├── get.go
+│   │       ├── set.go
+│   │       └── trigger.go
+│   ├── utils
+│   │   └── utils.go
+│   └── views
+│       ├── alarms
+│       │   ├── devices.go
+│       │   ├── get.go
+│       │   ├── history.go
+│       │   ├── live.go
+│       │   └── set.go
+│       ├── assets
+│       │   └── assets.go
+│       ├── commands
+│       │   ├── get.go
+│       │   └── set.go
+│       ├── devices
+│       │   └── get.go
+│       ├── env
+│       │   ├── env.go
+│       │   ├── mode
+│       │   │   └── get.go
+│       │   ├── serial
+│       │   │   └── get.go
+│       │   ├── ui_alarms_acknowledge_enable
+│       │   │   └── get.go
+│       │   ├── ui_alarms_plc_configuration_enable
+│       │   │   └── get.go
+│       │   └── ui_api_wss_enable
+│       │       └── get.go
+│       ├── permissions
+│       │   └── users
+│       │       ├── delete.go
+│       │       ├── get_by_sources.go
+│       │       ├── get_by_user_ids.go
+│       │       └── set.go
+│       ├── ping
+│       │   └── ping.go
+│       ├── records
+│       │   ├── bunkering
+│       │   │   └── bunkering.go
+│       │   ├── graph
+│       │   │   └── graph.go
+│       │   ├── latest
+│       │   │   ├── tags
+│       │   │   │   └── trigger.go
+│       │   │   └── trigger.go
+│       │   ├── live
+│       │   │   ├── functions_auth.go
+│       │   │   ├── functions_req.go
+│       │   │   ├── functions_res.go
+│       │   │   ├── functions_ws.go
+│       │   │   ├── README.md
+│       │   │   ├── trigger.go
+│       │   │   └── utils.go
+│       │   ├── records.go
+│       │   ├── set
+│       │   │   ├── set.go
+│       │   │   └── utils.go
+│       │   └── simulation
+│       │       ├── trigger.go
+│       │       └── utils.go
+│       ├── sources
+│       │   ├── get.go
+│       │   └── set.go
+│       ├── users
+│       │   ├── auth.go
+│       │   ├── disable.go
+│       │   ├── enable.go
+│       │   ├── is_enabled
+│       │   │   └── is_enabled.go
+│       │   ├── is_set
+│       │   │   └── is_set.go
+│       │   ├── pin.go
+│       │   ├── reset.go
+│       │   ├── set.go
+│       │   └── users.go
+│       ├── variant_license_key
+│       │   ├── encrypted
+│       │   │   └── public
+│       │   │       └── get.go
+│       │   ├── obfuscate.go
+│       │   ├── set.go
+│       │   ├── variant_license_key.go
+│       │   └── verify.go
+│       └── views.go
+└── tree.md
+
+159 directories, 288 files

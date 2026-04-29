@@ -1,0 +1,217 @@
+networks:
+  alarms-network:
+    driver: bridge
+    name: alarms-network
+
+services:
+  # ============================================
+  # 1. MOSQUITTO MQTT BROKER
+  # ============================================
+  # MQTT : mosquitto
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    profiles: [transmitter, receiver]
+    ports:
+      - "127.0.0.1:1883:1883" # MQTT
+      - "127.0.0.1:9001:9001" # WS
+    expose:
+      - "1883"
+      - "9001"
+    restart: always
+    networks: [internal-layer-3-net]
+    volumes:
+      - ./src/generic/mqtt_mosquitto/data/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - mosquitto-volume:/mosquitto/data
+
+
+  # ============================================
+  # 2. NODE-RED (Alarms Manager)
+  # ============================================
+  nodered:
+    image: nodered/node-red:latest
+    container_name: alarm-nodered
+    restart: always
+    networks:
+      - alarms-network
+    ports:
+      - "1880:1880"      # Node-RED Editor
+      - "8083:8083"      # API endpoint (για alarms)
+    environment:
+      - NODE_RED_ENABLE_SAFE_MODE=false
+      - NODE_RED_USERNAME=${NR_USERNAME:-admin}
+      - NODE_RED_PASSWORD=${NR_PASSWORD:-admin}
+    volumes:
+      - nodered-data:/data
+      - ./nodered/flows.json:/data/flows.json:ro
+      - ./nodered/settings.js:/data/settings.js:ro
+      - sqlite-data:/data/star_sync_alarms_manager
+      - sqlite-data:/data/alarms_queue_sync
+    depends_on:
+      - mosquitto
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================
+  # 3. REACT DASHBOARD (Production Build)
+  # ============================================
+  ui:
+    build:
+      context: ./react-alarm-dashboard
+      dockerfile: Dockerfile
+      args:
+        - REACT_APP_MQTT_BROKER=ws://mosquitto:9001
+        - REACT_APP_API_URL=http://nodered:1880
+    container_name: alarm-dashboard
+    restart: always
+    networks:
+      - alarms-network
+    ports:
+      - "3000:80"        # Nginx serving React
+    depends_on:
+      - mosquitto
+      - nodered
+    environment:
+      - NODE_ENV=production
+      - MQTT_BROKER=ws://mosquitto:9001
+      - API_URL=http://nodered:1880
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================
+  # 4. (Optional) NGINX Reverse Proxy
+  # ============================================
+  nginx:
+    image: nginx:alpine
+    container_name: alarm-nginx
+    restart: always
+    networks:
+      - alarms-network
+    ports:
+      - "80:80"          # HTTP
+      - "443:443"        # HTTPS (για production)
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - ui
+      - nodered
+    profiles:
+      - production
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================
+  # 5. (Optional) Watchtower - Auto Updates
+  # ============================================
+  watchtower:
+    image: containrrr/watchtower
+    container_name: alarm-watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_INTERVAL=3600  # 1 hour
+    profiles:
+      - auto-update
+
+  # ============================================
+  # 6. CASSANDRA DATABASE
+  # ============================================
+  cassandra:
+    image: cassandra:latest
+    container_name: alarm-cassandra
+    restart: always
+    networks:
+      - alarms-network
+    ports:
+      - "9042:9042"
+    environment:
+      - CASSANDRA_CLUSTER_NAME=AlarmsCluster
+      - CASSANDRA_KEYSPACE=stsy_ks
+    volumes:
+      - cassandra-data:/var/lib/cassandra
+    healthcheck:
+      test: [ "CMD", "cqlsh", "-e", "describe keyspaces" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+# ============================================
+# 7. REDIS CACHE
+# ============================================
+  redis:
+    image: redis:alpine
+    container_name: alarm-redis
+    restart: always
+    networks:
+      - alarms-network
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+
+# ============================================
+# 8. GO API SERVICE
+# ============================================
+  go-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: alarm-go-api
+    restart: always
+    networks:
+      - alarms-network
+    ports:
+      - "8083:8083"
+    environment:
+      - COMPOSE_PROFILES=${COMPOSE_PROFILES:-}
+      - SERIAL=${SERIAL:-}
+    volumes:
+      - ./mnt/db_sqlite:/mnt/db_sqlite
+    depends_on:
+      cassandra:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  nodered-data:
+    driver: local
+    name: nodered-data
+  mosquitto-data:
+    driver: local
+    name: mosquitto-data
+  mosquitto-config:
+    driver: local
+    name: mosquitto-config
+  sqlite-data:
+    driver: local
+    name: sqlite-data
+  cassandra-data:      # ← ΠΡΟΣΘΗΚΗ
+    driver: local
+    name: cassandra-data
+  redis-data:          # ← ΠΡΟΣΘΗΚΗ
+    driver: local
+    name: redis-data

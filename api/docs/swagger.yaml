@@ -1,0 +1,701 @@
+definitions:
+  bunkering.TypeReq:
+    properties:
+      data:
+        properties:
+          averageTags:
+            items:
+              type: string
+            type: array
+          end:
+            type: string
+          latestTags:
+            items:
+              type: string
+            type: array
+          source:
+            type: string
+          start:
+            type: string
+        type: object
+      metadata:
+        additionalProperties: {}
+        description: override, but better not
+        type: object
+    type: object
+  bunkering.TypeRes:
+    properties:
+      data:
+        properties:
+          averageRecord:
+            $ref: '#/definitions/global_model.TypeRecord'
+          latestRecord:
+            $ref: '#/definitions/global_model.TypeRecord'
+        type: object
+      metadata:
+        additionalProperties: {}
+        description: override, but better not
+        type: object
+      status:
+        description: never override
+        properties:
+          errCode:
+            type: integer
+          errDesc:
+            type: string
+        type: object
+    type: object
+  create.TypeReq:
+    properties:
+      data:
+        properties:
+          enabled:
+            type: boolean
+          name:
+            type: string
+          pass:
+            type: string
+        type: object
+      metadata:
+        additionalProperties: {}
+        description: override, but better not
+        type: object
+    type: object
+  create.TypeRes:
+    properties:
+      data:
+        properties:
+          userId:
+            type: integer
+        type: object
+      metadata:
+        additionalProperties: {}
+        description: override, but better not
+        type: object
+      status:
+        description: never override
+        properties:
+          errCode:
+            type: integer
+          errDesc:
+            type: string
+        type: object
+    type: object
+  delete.TypeReq:
+    properties:
+      data:
+        $ref: '#/definitions/global_model.TypeDeleteSourceUser'
+      metadata:
+        additionalProperties: {}
+        description: override, but better not
+        type: object
+    type: object
+  delete.TypeRes:
+    properties:
+      data:
+        description: feel free to override
+      metadata:
+        additionalProperties: {}
+        description: override, but better not
+        type: object
+      status:
+        description: never override
+        properties:
+          errCode:
+            type: integer
+          errDesc:
+            type: string
+        type: object
+    type: object
+  get_by_sources.TypeReq:
+    properties:
+      data:
+        properties:
+          sources:
+            items:
+              type: string
+            type: array
+        type: object
+      metadata:
+        additionalProperties: {}
+        description: override, but better not
+        type: object
+    type: object
+  get_by_sources.TypeRes:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/global_model.TypeSourceUsers'
+        type: array
+      metadata:
+        additionalProperties: {}
+        description: override, but better not
+        type: object
+      status:
+        description: never override
+        properties:
+          errCode:
+            type: integer
+          errDesc:
+            type: string
+        type: object
+    type: object
+  get_by_user_ids.TypeReq:
+    properties:
+      data:
+        properties:
+          userIds:
+            items:
+              type: integer
+            type: array
+        type: object
+      metadata:
+        additionalProperties: {}
+        description: override, but better not
+        type: object
+    type: object
+  get_by_user_ids.TypeRes:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/global_model.TypeUserSources'
+        type: array
+      metadata:
+        additionalProperties: {}
+        description: override, but better not
+        type: object
+      status:
+        description: never override
+        properties:
+          errCode:
+            type: integer
+          errDesc:
+            type: string
+        type: object
+    type: object
+  global_model.TypeDeleteSourceUser:
+    properties:
+      sourceSerial:
+        type: string
+      userId:
+        type: integer
+    type: object
+  global_model.TypeRecord:
+    additionalProperties: {}
+    type: object
+  global_model.TypeSourceUsers:
+    properties:
+      source:
+        type: string
+      users:
+        items:
+          $ref: '#/definitions/global_model.TypeUser'
+        type: array
+    type: object
+  global_model.TypeUser:
+    properties:
+      userId:
+        type: integer
+      username:
+        $ref: '#/definitions/global_model.TypeUsername'
+    type: object
+  global_model.TypeUserSources:
+    properties:
+      sources:
+        items:
+          type: string
+        type: array
+      user:
+        $ref: '#/definitions/global_model.TypeUser'
+    type: object
+  global_model.TypeUsername:
+    enum:
+    - root
+    type: string
+    x-enum-varnames:
+    - CONST_USERS_ROOT_USERNAME
+  main_src_models_variants_variant_2_io_permissions_users_sources_set.TypeReq:
+    properties:
+      data:
+        properties:
+          idUser:
+            type: integer
+          readPermission:
+            type: boolean
+          sourceSerial:
+            type: string
+          writePermission:
+            type: boolean
+        type: object
+      metadata:
+        additionalProperties: {}
+        description: override, but better not
+        type: object
+    type: object
+  main_src_models_variants_variant_2_io_permissions_users_sources_set.TypeRes:
+    properties:
+      data:
+        description: feel free to override
+      metadata:
+        additionalProperties: {}
+        description: override, but better not
+        type: object
+      status:
+        description: never override
+        properties:
+          errCode:
+            type: integer
+          errDesc:
+            type: string
+        type: object
+    type: object
+  main_src_models_variants_variant_2_io_sources_get.TypeRes:
+    properties:
+      data:
+        items:
+          type: string
+        type: array
+      metadata:
+        additionalProperties: {}
+        description: override, but better not
+        type: object
+      status:
+        description: never override
+        properties:
+          errCode:
+            type: integer
+          errDesc:
+            type: string
+        type: object
+    type: object
+  main_src_models_variants_variant_2_io_sources_set.TypeReq:
+    properties:
+      data:
+        properties:
+          source:
+            type: string
+        type: object
+      metadata:
+        additionalProperties: {}
+        description: override, but better not
+        type: object
+    type: object
+  main_src_models_variants_variant_2_io_sources_set.TypeRes:
+    properties:
+      data:
+        description: feel free to override
+      metadata:
+        additionalProperties: {}
+        description: override, but better not
+        type: object
+      status:
+        description: never override
+        properties:
+          errCode:
+            type: integer
+          errDesc:
+            type: string
+        type: object
+    type: object
+  main_src_models_variants_variant_2_io_users_auth.TypeReq:
+    properties:
+      data:
+        properties:
+          name:
+            type: string
+          pass:
+            type: string
+        type: object
+      metadata:
+        additionalProperties: {}
+        description: override, but better not
+        type: object
+    type: object
+  main_src_models_variants_variant_2_io_users_auth.TypeRes:
+    properties:
+      data:
+        properties:
+          auth:
+            type: boolean
+          id:
+            type: integer
+          session:
+            type: string
+        type: object
+      metadata:
+        additionalProperties: {}
+        description: override, but better not
+        type: object
+      status:
+        description: never override
+        properties:
+          errCode:
+            type: integer
+          errDesc:
+            type: string
+        type: object
+    type: object
+  main_src_models_variants_variant_2_io_users_get.TypeRes:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/global_model.TypeUser'
+        type: array
+      metadata:
+        additionalProperties: {}
+        description: override, but better not
+        type: object
+      status:
+        description: never override
+        properties:
+          errCode:
+            type: integer
+          errDesc:
+            type: string
+        type: object
+    type: object
+info:
+  contact: {}
+paths:
+  /api/v2/permissions/users/sources/delete:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/delete.TypeReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Response body
+          schema:
+            $ref: '#/definitions/delete.TypeRes'
+        "400":
+          description: Response body
+          schema:
+            $ref: '#/definitions/delete.TypeRes'
+        "401":
+          description: Response body
+          schema:
+            $ref: '#/definitions/delete.TypeRes'
+        "500":
+          description: Response body
+          schema:
+            $ref: '#/definitions/delete.TypeRes'
+      security:
+      - HeadersUserId: []
+      - HeadersSession: []
+      - Cookie: []
+      summary: (root-only)
+      tags:
+      - permissions_users_sources
+  /api/v2/permissions/users/sources/get/get_by_sources:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/get_by_sources.TypeReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/get_by_sources.TypeRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/get_by_sources.TypeRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/get_by_sources.TypeRes'
+      security:
+      - HeadersUserId: []
+      - HeadersSession: []
+      - Cookie: []
+      summary: (root-only)
+      tags:
+      - permissions_users_sources
+  /api/v2/permissions/users/sources/get/get_by_user_ids:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/get_by_user_ids.TypeReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/get_by_user_ids.TypeRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/get_by_user_ids.TypeRes'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/get_by_user_ids.TypeRes'
+      security:
+      - HeadersUserId: []
+      - HeadersSession: []
+      - Cookie: []
+      summary: (must be root if asking for other users)
+      tags:
+      - permissions_users_sources
+  /api/v2/permissions/users/sources/set:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main_src_models_variants_variant_2_io_permissions_users_sources_set.TypeReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Response body
+          schema:
+            $ref: '#/definitions/main_src_models_variants_variant_2_io_permissions_users_sources_set.TypeRes'
+        "400":
+          description: Response body
+          schema:
+            $ref: '#/definitions/main_src_models_variants_variant_2_io_permissions_users_sources_set.TypeRes'
+        "401":
+          description: Response body
+          schema:
+            $ref: '#/definitions/main_src_models_variants_variant_2_io_permissions_users_sources_set.TypeRes'
+        "500":
+          description: Response body
+          schema:
+            $ref: '#/definitions/main_src_models_variants_variant_2_io_permissions_users_sources_set.TypeRes'
+      security:
+      - HeadersUserId: []
+      - HeadersSession: []
+      - Cookie: []
+      summary: (root-only)
+      tags:
+      - permissions_users_sources
+  /api/v2/records/bunkering:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/bunkering.TypeReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/bunkering.TypeRes'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/bunkering.TypeRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/bunkering.TypeRes'
+      security:
+      - HeadersUserId: []
+      - HeadersSession: []
+      - Cookie: []
+      tags:
+      - records
+  /api/v2/sources/get:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main_src_models_variants_variant_2_io_sources_get.TypeRes'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/main_src_models_variants_variant_2_io_sources_get.TypeRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main_src_models_variants_variant_2_io_sources_get.TypeRes'
+      security:
+      - HeadersUserId: []
+      - HeadersSession: []
+      - Cookie: []
+      summary: (root-only)
+      tags:
+      - sources
+  /api/v2/sources/set:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main_src_models_variants_variant_2_io_sources_set.TypeReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main_src_models_variants_variant_2_io_sources_set.TypeRes'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/main_src_models_variants_variant_2_io_sources_set.TypeRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main_src_models_variants_variant_2_io_sources_set.TypeRes'
+      security:
+      - HeadersUserId: []
+      - HeadersSession: []
+      - Cookie: []
+      summary: (root-only)
+      tags:
+      - sources
+  /api/v2/users/auth:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main_src_models_variants_variant_2_io_users_auth.TypeReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main_src_models_variants_variant_2_io_users_auth.TypeRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/main_src_models_variants_variant_2_io_users_auth.TypeRes'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/main_src_models_variants_variant_2_io_users_auth.TypeRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main_src_models_variants_variant_2_io_users_auth.TypeRes'
+      tags:
+      - users
+  /api/v2/users/create:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/create.TypeReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/create.TypeRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/create.TypeRes'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/create.TypeRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/create.TypeRes'
+      security:
+      - HeadersUserId: []
+      - HeadersSession: []
+      - Cookie: []
+      summary: (root-only)
+      tags:
+      - users
+  /api/v2/users/get:
+    post:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Request Body
+          schema:
+            $ref: '#/definitions/main_src_models_variants_variant_2_io_users_get.TypeRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/main_src_models_variants_variant_2_io_users_get.TypeRes'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/main_src_models_variants_variant_2_io_users_get.TypeRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main_src_models_variants_variant_2_io_users_get.TypeRes'
+      security:
+      - HeadersUserId: []
+      - HeadersSession: []
+      - Cookie: []
+      summary: (root-only)
+      tags:
+      - users
+securityDefinitions:
+  Cookie:
+    in: header
+    name: Cookie
+    type: apiKey
+  HeadersSession:
+    in: header
+    name: Session
+    type: apiKey
+  HeadersUserId:
+    in: header
+    name: User-Id
+    type: apiKey
+swagger: "2.0"
